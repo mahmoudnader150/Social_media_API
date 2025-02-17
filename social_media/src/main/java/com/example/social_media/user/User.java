@@ -1,10 +1,15 @@
 package com.example.social_media.user;
 
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 
 public class User {
     private Integer id;
+    @Size(min = 2, max = 50,message = "Name should be at least 2 characters")
     private String name;
+    @Past(message = "Invalid Birth Date")
     private LocalDateTime birthDate;
 
     public User(Integer id, String name, LocalDateTime birthDate) {
