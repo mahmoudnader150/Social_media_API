@@ -20,4 +20,20 @@ public class PostDaoService {
         Predicate<? super Post> predicate = post -> post.getUser().getId().equals(user.getId());
         return posts.stream().filter(predicate).toList();
     }
+
+    public Post findOne(Long id) {
+        Predicate<? super Post> predicate = post -> post.getId().equals(id);
+        return posts.stream().filter(predicate).findFirst().orElse(null);
+    }
+
+    public Post save(Post post) {
+        post.setId(++postsCount);
+        posts.add(post);
+        return post;
+    }
+
+    public void deleteById(Long id) {
+        Predicate<? super Post> predicate = post -> post.getId().equals(id);
+        posts.removeIf(predicate);
+    }
 } 
