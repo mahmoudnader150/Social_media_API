@@ -19,6 +19,7 @@ public class WelcomeController {
 
     @GetMapping("/welcome")
     public String welcome() {
+       // comment 
         Locale locale = LocaleContextHolder.getLocale();
         return messageSource.getMessage("welcome.message",null ,"Default message",locale);
 
