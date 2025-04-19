@@ -4,7 +4,7 @@ import com.example.social_media.comment.Comment;
 import com.example.social_media.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
@@ -18,13 +18,14 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Size(min = 1, message = "Post content cannot be empty")
+    @NotBlank(message = "Post content cannot be empty")
+    @Size(min = 1, max = 1000, message = "Post content must be between 1 and 1000 characters")
     @Column(columnDefinition = "TEXT")
     private String content;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
-    
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -32,17 +33,19 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    // Default constructor
+    public Post() {
+        this.createdAt = LocalDateTime.now();
     }
 
-    public Post(Long id, String content, User user) {
-        this.id = id;
+    // Constructor with fields
+    public Post(String content, User user) {
         this.content = content;
         this.user = user;
+        this.createdAt = LocalDateTime.now();
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -83,6 +86,7 @@ public class Post {
         this.comments = comments;
     }
 
+    // Helper methods for managing comments
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.setPost(this);

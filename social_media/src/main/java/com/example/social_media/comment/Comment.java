@@ -38,6 +38,22 @@ public class Comment {
         createdAt = LocalDateTime.now();
     }
 
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     // Getters and setters remain the same
     // ... (keep existing methods)
 } 
