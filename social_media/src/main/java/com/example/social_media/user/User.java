@@ -1,15 +1,24 @@
 package com.example.social_media.user;
 
+import com.example.social_media.post.Post;
+import com.example.social_media.comment.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name = "users")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(min = 2, max = 50, message = "Name should be at least 2 characters")
@@ -22,6 +31,7 @@ public class User {
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
+    @Column(unique = true)
     private String email;
 
     @NotBlank(message = "Password is required")
@@ -30,6 +40,14 @@ public class User {
     private String password;
 
     private String role = "ROLE_USER";
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Comment> comments = new ArrayList<>();
 
     // Default constructor
     public User() {
@@ -98,6 +116,22 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     @Override
