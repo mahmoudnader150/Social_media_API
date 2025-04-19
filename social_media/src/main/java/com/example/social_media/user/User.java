@@ -69,7 +69,7 @@ public class User {
         this.password = password;
     }
 
-    // Getters and Setters
+    // Getters and setters
     public Integer getId() {
         return id;
     }
