@@ -6,6 +6,7 @@ import com.example.social_media.security.CustomUserDetails;
 import com.example.social_media.user.User;
 import com.example.social_media.user.UserService;
 import jakarta.validation.Valid;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,7 @@ public class PostController {
     private final PostService postService;
     private final UserService userService;
 
-    public PostController(PostService postService, UserService userService) {
+    public PostController(PostService postService, @Lazy UserService userService) {
         this.postService = postService;
         this.userService = userService;
     }
