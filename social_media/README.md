@@ -4,13 +4,13 @@ A RESTful API for a social media platform built with Spring Boot and Spring Secu
 
 ## Features
 
-- User authentication with JWT
-- User registration and management
-- Post creation and management
-- Comment system
-- API versioning
-- Response filtering
-- Internationalization support
+1- User authentication with JWT
+2- User registration and management
+3- Post creation and management
+4- Comment system
+5- API versioning
+6- Response filtering
+7- Internationalization support
 
 ## Prerequisites
 
