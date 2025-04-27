@@ -12,6 +12,7 @@ A RESTful API for a social media platform built with Spring Boot and Spring Secu
 6- Response filtering
 7- Internationalization support
 
+
 ## Prerequisites
 
 - Java 17 or higher
