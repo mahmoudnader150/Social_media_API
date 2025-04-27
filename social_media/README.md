@@ -1,6 +1,6 @@
 # Social Media API
 
-A RESTful API for a social media platform built with Spring Boot and Spring Security.
+A RESTful API for a social media platform built with Java Spring Boot and Spring Security.
 
 ## Features
 
