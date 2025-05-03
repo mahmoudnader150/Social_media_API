@@ -19,7 +19,7 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Size(min = 2, max = 50, message = "Name should be at least 2 characters")
     @JsonProperty("name")
@@ -54,14 +54,14 @@ public class User {
     }
 
     // Constructor for existing code compatibility
-    public User(Integer id, String name, LocalDateTime birthDate) {
+    public User(Long id, String name, LocalDateTime birthDate) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
     }
 
     // Full constructor
-    public User(Integer id, String name, LocalDateTime birthDate, String email, String password) {
+    public User(Long id, String name, LocalDateTime birthDate, String email, String password) {
         this.id = id;
         this.name = name;
         this.birthDate = birthDate;
@@ -70,11 +70,11 @@ public class User {
     }
 
     // Getters and setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -132,6 +132,10 @@ public class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public String getUsername() {
+        return email;
     }
 
     @Override
