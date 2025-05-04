@@ -11,6 +11,7 @@ A RESTful API for a social media platform built with Java Spring Boot and Spring
 5- API versioning
 6- Response filtering
 7- Internationalization support
+8- Real-time chat functionality using WebSocket
 
 
 ## Prerequisites
@@ -180,6 +181,42 @@ Content-Type: application/json
 DELETE /users/{id}
 Authorization: Bearer <token>
 ```
+
+### WebSocket Chat
+
+The application provides real-time chat functionality using WebSocket. To use the chat feature:
+
+1. Connect to the WebSocket endpoint:
+```http
+ws://localhost:8080/ws/chat
+```
+
+2. Send a message in the following format:
+```json
+{
+    "senderId": "long",
+    "receiverId": "long",
+    "content": "string"
+}
+```
+
+3. Receive messages in real-time with the following format:
+```json
+{
+    "id": "long",
+    "senderId": "long",
+    "receiverId": "long",
+    "content": "string",
+    "timestamp": "string"
+}
+```
+
+The chat system supports:
+- One-to-one messaging
+- Real-time message delivery
+- Message history
+- Online/offline status
+- Message read receipts
 
 ## Security
 
