@@ -24,8 +24,8 @@ public class ChatService {
 
     @Transactional
     public Message sendMessage(Long senderId, Long receiverId, String content) {
-        User sender = userService.getUserById(senderId);
-        User receiver = userService.getUserById(receiverId);
+        User sender = userService.findById(senderId);
+        User receiver = userService.findById(receiverId);
 
         Message message = new Message();
         message.setSender(sender);
@@ -36,7 +36,7 @@ public class ChatService {
 
         // Send message to receiver's WebSocket topic
         messagingTemplate.convertAndSendToUser(
-            receiver.getUsername(),
+            receiver.getEmail(), // Using email as username
             "/queue/messages",
             savedMessage
         );
@@ -46,15 +46,15 @@ public class ChatService {
 
     @Transactional(readOnly = true)
     public List<Message> getChatHistory(Long userId1, Long userId2) {
-        User user1 = userService.getUserById(userId1);
-        User user2 = userService.getUserById(userId2);
+        User user1 = userService.findById(userId1);
+        User user2 = userService.findById(userId2);
         return messageRepository.findChatHistory(user1, user2);
     }
 
     @Transactional(readOnly = true)
     public List<Message> getUnreadMessages(Long userId, Long senderId) {
-        User user = userService.getUserById(userId);
-        User sender = userService.getUserById(senderId);
+        User user = userService.findById(userId);
+        User sender = userService.findById(senderId);
         return messageRepository.findUnreadMessages(user, sender);
     }
 } 
