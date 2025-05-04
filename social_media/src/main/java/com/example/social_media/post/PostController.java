@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<PostResponse>> getUserPosts(@PathVariable Integer userId) {
+    public ResponseEntity<List<PostResponse>> getUserPosts(@PathVariable Long userId) {
         User user = userService.findById(userId);
         List<Post> posts = postService.findByUser(user);
         List<PostResponse> responses = posts.stream()
