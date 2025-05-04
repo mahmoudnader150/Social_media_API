@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 
 public class ErrorResponse {
     private LocalDateTime timestamp;
-    private int status;
+    private Integer status;
     private String error;
     private String message;
 
-    public ErrorResponse(LocalDateTime timestamp, int status, String error, String message) {
+    public ErrorResponse(LocalDateTime timestamp, Integer status, String error, String message) {
         this.timestamp = timestamp;
         this.status = status;
         this.error = error;
@@ -24,11 +24,11 @@ public class ErrorResponse {
         this.timestamp = timestamp;
     }
 
-    public int getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
