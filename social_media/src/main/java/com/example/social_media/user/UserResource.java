@@ -17,51 +17,47 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class UserResource {
-    private UserDaoService userDaoService;
+    private final UserRepository userRepository;
 
-    public UserResource(UserDaoService userDaoService) {
-        this.userDaoService = userDaoService;
+    public UserResource(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/users")
-    public List<User> retrieveAllUsers(){
-          return userDaoService.findAll();
+    public List<User> retrieveAllUsers() {
+        return userRepository.findAll();
     }
 
     //http://localhost:8080/users
     //EntityModel
     //WebMvcLinkBuilder
     @GetMapping("/users/{id}")
-    public EntityModel<User> retrieveUser(@PathVariable int id){
-      User user =  userDaoService.findOne(id);
+    public EntityModel<User> retrieveUser(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("id:" + id));
 
-      if(user == null){
-          throw new UserNotFoundException("id:"+id);
-      }
+        EntityModel<User> entityModel = EntityModel.of(user);
+        WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrieveAllUsers());
+        entityModel.add(link.withRel("all-users"));
 
-      // Initializing the entity model
-      EntityModel<User> entityModel = EntityModel.of(user);
-      // get link by method in case the link changed
-      WebMvcLinkBuilder link = linkTo(methodOn(this.getClass()).retrieveAllUsers());
-      // Adding link to the entity model of the user
-      entityModel.add(link.withRel("all-users"));
-
-      return entityModel;
+        return entityModel;
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id){
-        userDaoService.deleteById(id);
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
-        User savedUser = userDaoService.save(user);
-        // return -> users/4
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+        User savedUser = userRepository.save(user);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(savedUser.getId())
                 .toUri();
+
         return ResponseEntity.created(location).build();
     }
 }

@@ -1,75 +1,67 @@
 package com.example.social_media.post;
 
 import com.example.social_media.user.User;
-import com.example.social_media.user.UserDaoService;
+import com.example.social_media.user.UserRepository;
 import com.example.social_media.user.UserNotFoundException;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class PostResource {
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    private final PostDaoService postDaoService;
-    private final UserDaoService userDaoService;
-
-    public PostResource(PostDaoService postDaoService, UserDaoService userDaoService) {
-        this.postDaoService = postDaoService;
-        this.userDaoService = userDaoService;
-    }
-
-    @GetMapping("/posts")
-    public List<Post> retrieveAllPosts() {
-        return postDaoService.findAll();
+    public PostResource(PostRepository postRepository, UserRepository userRepository) {
+        this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/users/{userId}/posts")
-    public List<Post> retrievePostsForUser(@PathVariable Integer userId) {
-        User user = userDaoService.findOne(userId);
-        if (user == null) {
-            throw new UserNotFoundException("User not found with id: " + userId);
+    public List<Post> retrievePostsForUser(@PathVariable Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("id:" + userId);
         }
-        return postDaoService.findByUser(user);
+        return postRepository.findByUserOrderByCreatedAtDesc(userOptional.get());
     }
 
-    @GetMapping("/posts/{postId}")
-    public Post retrievePost(@PathVariable Long postId) {
-        Post post = postDaoService.findOne(postId);
-        if (post == null) {
-            throw new PostNotFoundException("Post not found with id: " + postId);
+    @GetMapping("/users/{userId}/posts/{id}")
+    public EntityModel<Post> retrievePostForUser(@PathVariable Long userId, @PathVariable Long id) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("id:" + userId);
         }
-        return post;
+
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isEmpty()) {
+            throw new PostNotFoundException("id:" + id);
+        }
+
+        EntityModel<Post> entityModel = EntityModel.of(post.get());
+        WebMvcLinkBuilder link = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrievePostsForUser(userId));
+        entityModel.add(link.withRel("all-posts"));
+
+        return entityModel;
     }
 
     @PostMapping("/users/{userId}/posts")
-    public ResponseEntity<Post> createPost(@PathVariable Integer userId, @Valid @RequestBody Post post) {
-        User user = userDaoService.findOne(userId);
-        if (user == null) {
-            throw new UserNotFoundException("User not found with id: " + userId);
+    public ResponseEntity<Post> createPost(@PathVariable Long userId, @Valid @RequestBody Post post) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isEmpty()) {
+            throw new UserNotFoundException("id:" + userId);
         }
-        
-        post.setUser(user);
-        Post savedPost = postDaoService.save(post);
 
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedPost.getId())
-                .toUri();
+        post.setUser(userOptional.get());
+        Post savedPost = postRepository.save(post);
 
-        return ResponseEntity.created(location).body(savedPost);
-    }
-
-    @DeleteMapping("/posts/{postId}")
-    public void deletePost(@PathVariable Long postId) {
-        Post post = postDaoService.findOne(postId);
-        if (post == null) {
-            throw new PostNotFoundException("Post not found with id: " + postId);
-        }
-        postDaoService.deleteById(postId);
+        URI location = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).retrievePostForUser(userId, savedPost.getId())).toUri();
+        return ResponseEntity.created(location).build();
     }
 } 
