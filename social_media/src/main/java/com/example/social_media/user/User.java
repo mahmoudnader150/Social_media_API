@@ -49,6 +49,14 @@ public class User {
     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<UserFollowing> following = new ArrayList<>();
+
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<UserFollowing> followers = new ArrayList<>();
+
     // Default constructor
     public User() {
     }
@@ -132,6 +140,22 @@ public class User {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public List<UserFollowing> getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(List<UserFollowing> following) {
+        this.following = following;
+    }
+
+    public List<UserFollowing> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(List<UserFollowing> followers) {
+        this.followers = followers;
     }
 
     public String getUsername() {

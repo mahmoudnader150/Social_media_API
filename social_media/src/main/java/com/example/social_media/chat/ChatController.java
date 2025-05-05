@@ -23,27 +23,44 @@ public class ChatController {
 
     @MessageMapping("/send")
     public void sendMessage(@Payload Map<String, String> message, Authentication authentication) {
-        Long senderId = Long.parseLong(authentication.getName());
-        Long receiverId = Long.parseLong(message.get("receiverId"));
-        String content = message.get("content");
-        chatService.sendMessage(senderId, receiverId, content);
+        // Validate the message payload
+        if (!message.containsKey("receiverId") || !message.containsKey("content")) {
+            throw new IllegalArgumentException("Missing required fields in message payload");
+        }
+
+        try {
+            Long senderId = Long.parseLong(authentication.getName());
+            Long receiverId = Long.parseLong(message.get("receiverId"));
+            String content = message.get("content");
+            chatService.sendMessage(senderId, receiverId, content);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid user ID format", e);
+        }
     }
 
     @GetMapping("/history/{userId}")
     public ResponseEntity<List<Message>> getChatHistory(
             @PathVariable Long userId,
             Authentication authentication) {
-        Long currentUserId = Long.parseLong(authentication.getName());
-        List<Message> messages = chatService.getChatHistory(currentUserId, userId);
-        return ResponseEntity.ok(messages);
+        try {
+            Long currentUserId = Long.parseLong(authentication.getName());
+            List<Message> messages = chatService.getChatHistory(currentUserId, userId);
+            return ResponseEntity.ok(messages);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid user ID format", e);
+        }
     }
 
     @GetMapping("/unread/{senderId}")
     public ResponseEntity<List<Message>> getUnreadMessages(
             @PathVariable Long senderId,
             Authentication authentication) {
-        Long currentUserId = Long.parseLong(authentication.getName());
-        List<Message> messages = chatService.getUnreadMessages(currentUserId, senderId);
-        return ResponseEntity.ok(messages);
+        try {
+            Long currentUserId = Long.parseLong(authentication.getName());
+            List<Message> messages = chatService.getUnreadMessages(currentUserId, senderId);
+            return ResponseEntity.ok(messages);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid user ID format", e);
+        }
     }
-} 
+}
