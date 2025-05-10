@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -49,5 +50,17 @@ public class UserService {
 
     public List<User> searchByName(String searchTerm) {
         return userRepository.searchByName(searchTerm);
+    }
+
+    public void updateUserStatus(Long userId, boolean isOnline) {
+        User user = findById(userId);
+        user.setOnline(isOnline);
+        userRepository.save(user);
+    }
+
+    public void updateLastSeen(Long userId) {
+        User user = findById(userId);
+        user.setLastSeen(LocalDateTime.now());
+        userRepository.save(user);
     }
 } 

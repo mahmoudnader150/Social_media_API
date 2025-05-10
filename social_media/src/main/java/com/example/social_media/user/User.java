@@ -41,6 +41,12 @@ public class User {
 
     private String role = "ROLE_USER";
 
+    @Column(name = "is_online")
+    private boolean isOnline = false;
+
+    @Column(name = "last_seen")
+    private LocalDateTime lastSeen;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Post> posts = new ArrayList<>();
@@ -124,6 +130,23 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+        this.lastSeen = online ? LocalDateTime.now() : null;
+    }
+
+    public LocalDateTime getLastSeen() {
+        return lastSeen;
+    }
+
+    public void setLastSeen(LocalDateTime lastSeen) {
+        this.lastSeen = lastSeen;
     }
 
     public List<Post> getPosts() {

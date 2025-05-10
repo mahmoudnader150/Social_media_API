@@ -32,6 +32,17 @@ public class UserController {
         return ResponseEntity.ok(userService.searchByName(query));
     }
 
+    @GetMapping("/{id}/status")
+    public ResponseEntity<UserStatusUpdate> getUserStatus(@PathVariable Long id) {
+        User user = userService.findById(id);
+        return ResponseEntity.ok(new UserStatusUpdate(
+            user.getId(),
+            user.getName(),
+            user.isOnline(),
+            user.getLastSeen()
+        ));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(
             @PathVariable Long id,
