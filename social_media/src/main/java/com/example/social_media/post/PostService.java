@@ -66,4 +66,8 @@ public class PostService {
     public boolean existsByIdAndUser(Long postId, User user) {
         return postRepository.existsByIdAndUserId(postId, user.getId());
     }
+
+    public Page<Post> searchByContent(String searchTerm, Pageable pageable) {
+        return postRepository.searchByContent(searchTerm, pageable);
+    }
 } 

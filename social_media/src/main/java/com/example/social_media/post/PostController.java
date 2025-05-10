@@ -40,6 +40,17 @@ public class PostController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<PostResponse>> searchPosts(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<Post> posts = postService.searchByContent(query, pageRequest);
+        Page<PostResponse> responses = posts.map(PostResponse::new);
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
         Post post = postService.findByIdWithComments(id);
