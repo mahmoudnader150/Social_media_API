@@ -1,6 +1,7 @@
 package com.example.social_media.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public interface UserFollowingRepository extends JpaRepository<UserFollowing, Lo
     
     boolean existsByFollowerIdAndFollowingId(Long followerId, Long followingId);
     
+    @Modifying
     void deleteByFollowerIdAndFollowingId(Long followerId, Long followingId);
     
     long countByFollowerId(Long followerId);
