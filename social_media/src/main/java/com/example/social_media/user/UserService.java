@@ -1,6 +1,7 @@
 package com.example.social_media.user;
 
 import com.example.social_media.security.SecurityConfig;
+import com.example.social_media.user.dto.UserProfileDTO;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -62,5 +63,19 @@ public class UserService {
         User user = findById(userId);
         user.setLastSeen(LocalDateTime.now());
         userRepository.save(user);
+    }
+
+    /**
+     * Get comprehensive user profile data including followers, following, posts, likes, etc.
+     * 
+     * @param userId The ID of the user
+     * @param includeFollowers Whether to include full follower data
+     * @param includeFollowing Whether to include full following data
+     * @return UserProfileDTO containing all requested user data
+     */
+    @Transactional(readOnly = true)
+    public UserProfileDTO getUserProfile(Long userId, boolean includeFollowers, boolean includeFollowing) {
+        User user = findById(userId);
+        return new UserProfileDTO(user, includeFollowers, includeFollowing);
     }
 } 

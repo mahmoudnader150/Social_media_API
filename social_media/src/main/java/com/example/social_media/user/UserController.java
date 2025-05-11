@@ -1,6 +1,7 @@
 package com.example.social_media.user;
 
 import com.example.social_media.security.CustomUserDetails;
+import com.example.social_media.user.dto.UserProfileDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -52,5 +53,44 @@ public class UserController {
         }
         userService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get comprehensive user profile data including followers, following, posts counts, etc.
+     *
+     * @param id ID of the user to get profile for
+     * @param includeFollowers Whether to include full follower details (optional, default=false)
+     * @param includeFollowing Whether to include full following details (optional, default=false)
+     * @return UserProfileDTO with comprehensive user data
+     */
+    @GetMapping("/{id}/profile")
+    public ResponseEntity<UserProfileDTO> getUserProfile(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean includeFollowers,
+            @RequestParam(defaultValue = "false") boolean includeFollowing) {
+        
+        UserProfileDTO profile = userService.getUserProfile(id, includeFollowers, includeFollowing);
+        return ResponseEntity.ok(profile);
+    }
+
+    /**
+     * Get current user's profile data
+     * 
+     * @param currentUser The authenticated user
+     * @param includeFollowers Whether to include full follower details (optional, default=false)
+     * @param includeFollowing Whether to include full following details (optional, default=false)
+     * @return UserProfileDTO with comprehensive user data
+     */
+    @GetMapping("/me/profile")
+    public ResponseEntity<UserProfileDTO> getMyProfile(
+            @AuthenticationPrincipal CustomUserDetails currentUser,
+            @RequestParam(defaultValue = "false") boolean includeFollowers,
+            @RequestParam(defaultValue = "false") boolean includeFollowing) {
+        
+        UserProfileDTO profile = userService.getUserProfile(
+                currentUser.getUser().getId(), 
+                includeFollowers, 
+                includeFollowing);
+        return ResponseEntity.ok(profile);
     }
 } 
