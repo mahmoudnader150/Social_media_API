@@ -2,6 +2,7 @@ package com.example.social_media.post;
 
 import com.example.social_media.comment.Comment;
 import com.example.social_media.like.Like;
+import com.example.social_media.media.Media;
 import com.example.social_media.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -23,6 +24,10 @@ public class Post {
     @Size(min = 1, max = 1000, message = "Post content must be between 1 and 1000 characters")
     @Column(columnDefinition = "TEXT")
     private String content;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "post_id")
+    private List<Media> media = new ArrayList<>();
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -97,6 +102,14 @@ public class Post {
 
     public void setLikes(List<Like> likes) {
         this.likes = likes;
+    }
+
+    public List<Media> getMedia() {
+        return media;
+    }
+
+    public void setMedia(List<Media> media) {
+        this.media = media;
     }
 
     // Helper methods for managing comments

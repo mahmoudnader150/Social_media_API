@@ -2,6 +2,7 @@ package com.example.social_media.user;
 
 import com.example.social_media.post.Post;
 import com.example.social_media.comment.Comment;
+import com.example.social_media.media.Media;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -46,6 +47,10 @@ public class User {
 
     @Column(name = "last_seen")
     private LocalDateTime lastSeen;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_picture_id")
+    private Media profilePicture;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
@@ -183,6 +188,14 @@ public class User {
 
     public String getUsername() {
         return email;
+    }
+
+    public Media getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(Media profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     @Override
