@@ -1,5 +1,6 @@
 package com.example.social_media.post;
 
+import com.example.social_media.notification.NotificationService;
 import com.example.social_media.post.dto.PostRequest;
 import com.example.social_media.post.dto.PostResponse;
 import com.example.social_media.security.CustomUserDetails;
@@ -24,10 +25,15 @@ import java.util.stream.Collectors;
 public class PostController {
     private final PostService postService;
     private final UserService userService;
+    private final NotificationService notificationService;
 
-    public PostController(PostService postService, @Lazy UserService userService) {
+    public PostController(
+            PostService postService, 
+            @Lazy UserService userService,
+            NotificationService notificationService) {
         this.postService = postService;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping
@@ -76,6 +82,9 @@ public class PostController {
         post.setUser(currentUser.getUser());
         
         Post savedPost = postService.save(post);
+        
+        // Send notifications to followers about new post
+        notificationService.notifyNewPost(currentUser.getUser(), savedPost.getId());
 
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()

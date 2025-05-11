@@ -1,5 +1,6 @@
 package com.example.social_media.like;
 
+import com.example.social_media.notification.NotificationService;
 import com.example.social_media.post.Post;
 import com.example.social_media.post.PostService;
 import com.example.social_media.security.CustomUserDetails;
@@ -12,10 +13,15 @@ import org.springframework.web.bind.annotation.*;
 public class LikeController {
     private final LikeService likeService;
     private final PostService postService;
+    private final NotificationService notificationService;
 
-    public LikeController(LikeService likeService, PostService postService) {
+    public LikeController(
+            LikeService likeService, 
+            PostService postService, 
+            NotificationService notificationService) {
         this.likeService = likeService;
         this.postService = postService;
+        this.notificationService = notificationService;
     }
 
     @PostMapping
@@ -29,6 +35,10 @@ public class LikeController {
         }
         
         likeService.likePost(post, currentUser.getUser());
+        
+        // Send notification to post author about the new like
+        notificationService.notifyNewLike(post.getUser(), post.getId(), currentUser.getUser());
+        
         return ResponseEntity.ok().build();
     }
 
