@@ -3,6 +3,7 @@ package com.example.social_media.user;
 import com.example.social_media.post.Post;
 import com.example.social_media.comment.Comment;
 import com.example.social_media.media.Media;
+import com.example.social_media.saved.SavedPost;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -67,6 +68,10 @@ public class User {
     @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<UserFollowing> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<SavedPost> savedPosts = new ArrayList<>();
 
     // Default constructor
     public User() {
@@ -196,6 +201,14 @@ public class User {
 
     public void setProfilePicture(Media profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public List<SavedPost> getSavedPosts() {
+        return savedPosts;
+    }
+
+    public void setSavedPosts(List<SavedPost> savedPosts) {
+        this.savedPosts = savedPosts;
     }
 
     @Override
