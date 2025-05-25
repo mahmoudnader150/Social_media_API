@@ -2,6 +2,9 @@ package com.example.social_media.post.dto;
 
 import com.example.social_media.post.Post;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.example.social_media.comment.dto.CommentResponse;
 
 public class PostResponse {
     private Long id;
@@ -10,6 +13,8 @@ public class PostResponse {
     private String userName;
     private Long userId;
     private int commentCount;
+    private int likesCount;
+    private List<CommentResponse> comments;
 
     public PostResponse(Post post) {
         this.id = post.getId();
@@ -18,6 +23,8 @@ public class PostResponse {
         this.userName = post.getUser().getName();
         this.userId = post.getUser().getId();
         this.commentCount = post.getComments().size();
+        this.likesCount = post.getLikes() != null ? post.getLikes().size() : 0;
+        this.comments = post.getComments() != null ? post.getComments().stream().map(CommentResponse::new).collect(Collectors.toList()) : null;
     }
 
     // Getters and Setters
@@ -68,4 +75,20 @@ public class PostResponse {
     public void setCommentCount(int commentCount) {
         this.commentCount = commentCount;
     }
-} 
+
+    public int getLikesCount() {
+        return likesCount;
+    }
+
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
+    }
+
+    public List<CommentResponse> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentResponse> comments) {
+        this.comments = comments;
+    }
+}
