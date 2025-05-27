@@ -1,6 +1,7 @@
 package com.example.social_media.user;
 
 import com.example.social_media.security.CustomUserDetails;
+import com.example.social_media.user.dto.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -60,15 +62,21 @@ public class UserFollowController {
     }
 
     @GetMapping("/{userId}/followers")
-    public ResponseEntity<List<User>> getUserFollowers(@PathVariable Long userId) {
+    public ResponseEntity<List<UserResponse>> getUserFollowers(@PathVariable Long userId) {
         List<User> followers = userFollowingService.getFollowers(userId);
-        return ResponseEntity.ok(followers);
+        List<UserResponse> followerResponses = followers.stream()
+                .map(UserResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(followerResponses);
     }
 
     @GetMapping("/{userId}/following")
-    public ResponseEntity<List<User>> getUserFollowing(@PathVariable Long userId) {
+    public ResponseEntity<List<UserResponse>> getUserFollowing(@PathVariable Long userId) {
         List<User> following = userFollowingService.getFollowing(userId);
-        return ResponseEntity.ok(following);
+        List<UserResponse> followingResponses = following.stream()
+                .map(UserResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(followingResponses);
     }
 
     @GetMapping("/{userId}/followers/count")
