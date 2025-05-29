@@ -118,6 +118,7 @@ Content-Type: application/json
 DELETE /api/v1/posts/{id}
 Authorization: Bearer <token>
 ```
+Response: HTTP 204 No Content (empty body)
 
 ### Comments
 
@@ -205,6 +206,31 @@ Authorization: Bearer <token>
 ```http
 GET /api/v1/users/me/profile
 Authorization: Bearer <token>
+```
+
+#### Update current user's profile
+```http
+PUT /api/v1/users/me/profile
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "name": "New Name",           // optional
+    "birthDate": "2025-05-29T00:00:00", // optional, ISO format
+    "password": "newpassword123"  // optional
+}
+```
+
+Response example:
+```json
+{
+    "id": 1,
+    "name": "New Name",
+    "email": "user@example.com",
+    "birthDate": "2025-05-29T00:00:00",
+    "online": true,
+    "lastSeen": "2025-05-29T12:34:56"
+}
 ```
 
 #### Get user status
