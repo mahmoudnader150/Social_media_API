@@ -1,13 +1,15 @@
 package com.example.social_media.user;
 
 import com.example.social_media.security.CustomUserDetails;
+import com.example.social_media.user.dto.UpdateProfileRequest;
 import com.example.social_media.user.dto.UserProfileDTO;
+import com.example.social_media.user.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -93,4 +95,12 @@ public class UserController {
                 includeFollowing);
         return ResponseEntity.ok(profile);
     }
-} 
+
+    @PutMapping("/me/profile")
+    public ResponseEntity<UserResponse> updateMyProfile(
+            @Validated @RequestBody UpdateProfileRequest request,
+            @AuthenticationPrincipal com.example.social_media.security.CustomUserDetails currentUser) {
+        UserResponse updated = userService.updateProfile(currentUser.getUser(), request);
+        return ResponseEntity.ok(updated);
+    }
+}

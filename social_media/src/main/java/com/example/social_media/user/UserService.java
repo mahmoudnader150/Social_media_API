@@ -1,7 +1,7 @@
 package com.example.social_media.user;
 
-import com.example.social_media.security.SecurityConfig;
 import com.example.social_media.user.dto.UserProfileDTO;
+import com.example.social_media.user.dto.UserResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -78,4 +78,18 @@ public class UserService {
         User user = findById(userId);
         return new UserProfileDTO(user, includeFollowers, includeFollowing);
     }
-} 
+
+    public UserResponse updateProfile(User currentUser, com.example.social_media.user.dto.UpdateProfileRequest request) {
+        if (request.getName() != null && !request.getName().trim().isEmpty()) {
+            currentUser.setName(request.getName().trim());
+        }
+        if (request.getBirthDate() != null) {
+            currentUser.setBirthDate(request.getBirthDate());
+        }
+        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+            currentUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        User updatedUser = userRepository.save(currentUser);
+        return new UserResponse(updatedUser);
+    }
+}
