@@ -1,5 +1,10 @@
 # Social Media API
 
+Social Media API is a feature-rich backend for a modern social networking platform.
+It supports user authentication, posts, comments, likes, follows, chat, and notifications.
+Built with Java Spring Boot, it offers RESTful endpoints and real-time WebSocket communication.
+The project is designed for scalability, security, and easy integration with frontend clients.
+
 A RESTful API for a social media platform built with Java Spring Boot and Spring Security.
 
 ## Features
