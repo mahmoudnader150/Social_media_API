@@ -1,5 +1,10 @@
 # Social Media API
 
+Social Media API is a feature-rich backend for a modern social networking platform.
+It supports user authentication, posts, comments, likes, follows, chat, and notifications.
+Built with Java Spring Boot, it offers RESTful endpoints and real-time WebSocket communication.
+The project is designed for scalability, security, and easy integration with frontend clients.
+
 A RESTful API for a social media platform built with Java Spring Boot and Spring Security.
 
 ## Features
@@ -118,6 +123,7 @@ Content-Type: application/json
 DELETE /api/v1/posts/{id}
 Authorization: Bearer <token>
 ```
+Response: HTTP 204 No Content (empty body)
 
 ### Comments
 
@@ -205,6 +211,31 @@ Authorization: Bearer <token>
 ```http
 GET /api/v1/users/me/profile
 Authorization: Bearer <token>
+```
+
+#### Update current user's profile
+```http
+PUT /api/v1/users/me/profile
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "name": "New Name",           // optional
+    "birthDate": "2025-05-29T00:00:00", // optional, ISO format
+    "password": "newpassword123"  // optional
+}
+```
+
+Response example:
+```json
+{
+    "id": 1,
+    "name": "New Name",
+    "email": "user@example.com",
+    "birthDate": "2025-05-29T00:00:00",
+    "online": true,
+    "lastSeen": "2025-05-29T12:34:56"
+}
 ```
 
 #### Get user status
